@@ -8,6 +8,17 @@ from torchvision import datasets, transforms
 from torch.autograd import Variable
 
 from PIL import Image
+import cv2
+from sort import *
+
+import argparse
+
+parser = argparse.ArgumentParser(description='define input and output video folders')
+
+parser.add_argument('--indir', type=str, default='videos/drone_vid_1.mp4',help='Input dir for videos')
+args= parser.parse_args()
+parser.add_argument('--outdir', type=str, default=args.indir.replace(".mp4", "-det.mp4"), help='Output dir for videos')
+args= parser.parse_args()
 
 # load weights and set defaults
 config_path='config/yolov3.cfg'
@@ -46,10 +57,8 @@ def detect_image(img):
         detections = utils.non_max_suppression(detections, 80, conf_thres, nms_thres)
     return detections[0]
 
-videopath = 'data/videos/police_chase.mp4'
+videopath = args.indir
 
-import cv2
-from sort import *
 colors=[(255,0,0),(0,255,0),(0,0,255),(255,0,255),(128,0,0),(0,128,0),(0,0,128),(128,0,128),(128,128,0),(0,128,128)]
 
 vid = cv2.VideoCapture(videopath)
@@ -58,12 +67,12 @@ mot_tracker = Sort()
 cv2.namedWindow('Stream',cv2.WINDOW_NORMAL)
 cv2.resizeWindow('Stream', (800,600))
 
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
+fourcc = cv2.VideoWriter_fourcc(*'MP4V')
 ret,frame=vid.read()
 vw = frame.shape[1]
 vh = frame.shape[0]
 print ("Video size", vw,vh)
-outvideo = cv2.VideoWriter(videopath.replace(".mp4", "-det.mp4"),fourcc,20.0,(vw,vh))
+outvideo = cv2.VideoWriter(args.outdir,fourcc,20.0,(vw,vh))
 
 frames = 0
 starttime = time.time()

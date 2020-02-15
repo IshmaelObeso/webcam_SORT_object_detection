@@ -2,18 +2,14 @@ from __future__ import division
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
 
-from PIL import Image
 
 from utils.parse_config import *
 from utils.utils import build_targets
 from collections import defaultdict
 
-##import matplotlib.pyplot as plt
-##import matplotlib.patches as patches
 
 
 def create_modules(module_defs):
@@ -111,8 +107,8 @@ class YOLOLayer(nn.Module):
         self.ignore_thres = 0.5
         self.lambda_coord = 1
 
-        self.mse_loss = nn.MSELoss(size_average=True)  # Coordinate loss
-        self.bce_loss = nn.BCELoss(size_average=True)  # Confidence loss
+        self.mse_loss = nn.MSELoss(reduction='mean')  # Coordinate loss
+        self.bce_loss = nn.BCELoss(reduction='mean')  # Confidence loss
         self.ce_loss = nn.CrossEntropyLoss()  # Class loss
 
     def forward(self, x, targets=None):
