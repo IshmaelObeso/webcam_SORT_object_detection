@@ -1,4 +1,4 @@
-# webcam_SORT_object_detection
+# webcam_SORT&YOLO_object_detection
 Object detection with pytorch
 
 1. run download_weights.sh to download YOLO weights
